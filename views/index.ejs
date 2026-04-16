@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chats</title>
+</head>
+<body>
+    <h1>All Chats</h1>
+    <% chats.forEach(chat => { %>
+        <div>
+            <p><strong><%= chat.from %></strong> to <strong><%= chat.to %></strong>: <%= chat.message %></p>
+            <small><%= chat.createdAt %></small>
+        </div>
+        <hr>
+    <% }) %>
+</body>
+</html>

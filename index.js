@@ -1,7 +1,7 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const app = express();
 const port = 3000;
-const mongoose = require("mongoose");
 
 const path = require("path");
 const Chat = require("./models/chat");
@@ -35,7 +35,7 @@ app.get("/", (req, res) => {
 app.get("/chats", async (req, res) => {
   let chats = await Chat.find();
   console.log(chats);
-  res.send("workingg");
+  res.render("index", { chats });
 });
 
 app.listen(port, () => {
