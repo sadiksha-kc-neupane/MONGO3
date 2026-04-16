@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const port = 3000;
+const mongoose = require("mongoose");
 
 const path = require("path");
 const Chat = require("./models/chat");
@@ -29,6 +30,12 @@ Chat1.save()
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
+});
+
+app.get("/chats", async (req, res) => {
+  let chats = await Chat.find();
+  console.log(chats);
+  res.send("workingg");
 });
 
 app.listen(port, () => {
