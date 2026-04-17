@@ -1,3 +1,17 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  margin: 20px;
+}
 .chat {
-  background-color: aqua;
+  background-color: #79a8e6;
+  padding: 20px;
+  border-radius: 16px;
+  display: inline-block;
+}
+.message {
+  background-color: #e0aeb3;
+  color: black;
+  padding: 5px 10px;
+  border-radius: 8px;
 }

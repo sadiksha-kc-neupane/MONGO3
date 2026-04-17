@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chats</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>All Chats</h1>
@@ -15,9 +15,11 @@
             <div class="message">
             <p> Message: <%= chat.message %></p>
             </div>
+            
             <small>Time : </time><%= chat.createdAt %>
             </small>
         </div>
+     
     </hr>
     <% }) %>
 </body>
