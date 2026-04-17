@@ -39,6 +39,10 @@ app.get("/chats", async (req, res) => {
   res.render("index", { chats });
 });
 
+app.get("/chats/new", (req, res) => {
+  res.render("new");
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
