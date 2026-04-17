@@ -4,15 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chats</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
     <h1>All Chats</h1>
     <% chats.forEach(chat => { %>
-        <div>
-            <p><strong><%= chat.from %></strong> to <strong><%= chat.to %></strong>: <%= chat.message %></p>
-            <small><%= chat.createdAt %></small>
+        <div class="chat">
+            <p><strong>From : <%= chat.from %></strong> 
+            <p> To :<%= chat.to %>  </p>
+            <div class="message">
+            <p> Message: <%= chat.message %></p>
+            </div>
+            <small>Time : </time><%= chat.createdAt %>
+            </small>
         </div>
-        <hr>
+    </hr>
     <% }) %>
 </body>
 </html>
