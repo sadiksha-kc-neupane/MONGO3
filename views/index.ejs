@@ -19,7 +19,7 @@
             <p> Message: <%= chat.message %></p>
             </div>
             
-            <small>Time : </time><%= chat.createdAt %>
+            <small>Time :<%= chat.createdAt.toString().split(" ").slice(0, 4).join("-") %>
             </small>
         </div>
      

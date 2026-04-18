@@ -44,6 +44,8 @@ app.get("/chats/new", (req, res) => {
   res.render("new");
 });
 
+
+//create route
 app.post("/chats", (req, res) => {
   let { from, to, message } = req.body;
   let newChat = new Chat({

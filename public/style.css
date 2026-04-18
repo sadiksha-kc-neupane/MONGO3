@@ -7,7 +7,9 @@ body {
   background-color: #79a8e6;
   padding: 20px;
   border-radius: 16px;
-  display: inline-block;
+  display: block;
+  margin: 0 auto 10px auto;
+  max-width: 600px;
 }
 .message {
   background-color: #e0aeb3;
