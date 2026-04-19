@@ -4,7 +4,7 @@ body {
   margin: 20px;
 }
 .chat {
-  background-color: #79a8e6;
+  background-color: #e4d0dd;
   padding: 20px;
   border-radius: 16px;
   display: block;
@@ -12,7 +12,7 @@ body {
   max-width: 600px;
 }
 .message {
-  background-color: #e0aeb3;
+  background-color: #c3979c;
   color: black;
   padding: 5px 10px;
   border-radius: 8px;
