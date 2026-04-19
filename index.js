@@ -88,6 +88,15 @@ app.put("/chats/:id", async (req, res) => {
   console.log(updatedChat);
 });
 
+//delete route
+
+app.delete("/chats/:id", async (req, res) => {
+  let { id } = req.params;
+  let deletedChats = await Chat.findByIdAndDelete(id);
+  console.log(deletedChats);
+  res.redirect("/chats");
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

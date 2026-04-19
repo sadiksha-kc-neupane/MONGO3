@@ -19,10 +19,14 @@
             <p> Message: <%= chat.message %></p>
             <form method="GET" action="/chats/<%= chat._id %>/edit">
                 <button type="submit">Edit</button>
+                <br>
+            </form>
+            <form method="POST" action="/chats/<%= chat._id %>?_method=DELETE"> 
+                <button type="submit">Delete</button>
             </form>
             </div>
             
-    
+            
             <small>Time :<%= chat.createdAt.toString().split(" ").slice(0, 4).join("-") %>
             </small>
         </div>
