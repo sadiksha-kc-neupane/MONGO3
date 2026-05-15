@@ -6,6 +6,8 @@ const path = require("path");
 const Chat = require("./models/chat");
 const methodOverride = require("method-override");
 
+const ExpressError = require("./views/ExpressError");
+
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
@@ -17,7 +19,7 @@ main()
   .catch((err) => console.log(err));
 
 async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/whatsapp");
+  await mongoose.connect("mongodb://127.0.0.1:27017/fakewhatsapp");
 }
 
 let Chat1 = new Chat({
@@ -42,7 +44,23 @@ app.get("/chats", async (req, res) => {
 });
 
 app.get("/chats/new", (req, res) => {
+  throw new ExpressError(400, "Bad Request");
   res.render("new");
+});
+
+// this route is for showing a single chat message based on its ID. It uses the findById method of the Chat model to retrieve the chat from the database. If the chat is not found, it returns a 404 status with a "Chat not found" message. If the ID provided is invalid, it catches the error and returns a 400 status with an "Invalid ID" message. If the chat is found successfully, it renders the "edit.ejs" template and passes the chat data to it for display.
+//NEW----show route
+app.get("/chats/:id", async (req, res, next) => {
+  let { id } = req.params;
+  try {
+    let chat = await Chat.findById(id);
+    if (!chat) {
+      return res.status(404).send("Chat not found");
+    }
+    res.render("edit.ejs", { chat });
+  } catch (err) {
+    res.status(400).send("Invalid ID");
+  }
 });
 
 //create route
@@ -95,6 +113,11 @@ app.delete("/chats/:id", async (req, res) => {
   let deletedChats = await Chat.findByIdAndDelete(id);
   console.log(deletedChats);
   res.redirect("/chats");
+});
+
+app.use((err, req, res, next) => {
+  let { status = 400, message = "Something went wrong" } = err;
+  res.status(status).send(message);
 });
 
 app.listen(port, () => {

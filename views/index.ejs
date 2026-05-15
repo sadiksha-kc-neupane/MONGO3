@@ -25,7 +25,10 @@
                 <button type="submit">Delete</button>
             </form>
             </div>
-            
+
+            <form method="GET" action="/chats/<%= chat._id %>"> 
+                <button>Show</button>
+            </form>          
             
             <small>Time :<%= chat.createdAt.toString().split(" ").slice(0, 4).join("-") %>
             </small>
