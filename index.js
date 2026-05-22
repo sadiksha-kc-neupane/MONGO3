@@ -38,9 +38,13 @@ app.get("/", (req, res) => {
 });
 
 app.get("/chats", async (req, res) => {
-  let chats = await Chat.find();
-  //console.log(chats);
-  res.render("index", { chats });
+  try {
+    let chats = await Chat.find();
+    //console.log(chats);
+    res.render("index", { chats });
+  } catch (err) {
+    next(err);
+  }
 });
 
 app.get("/chats/new", (req, res) => {
@@ -65,59 +69,71 @@ app.get("/chats/:id", async (req, res, next) => {
 
 //create route
 app.post("/chats", (req, res) => {
-  try{  let { from, to, message } = req.body;
-  let newChat = new Chat({
-    from: from,
-    to: to,
-    message: message,
-    createdAt: new Date(),
-  });
-
-  newChat
-    .save()
-    .then(() => {
-      console.log("Chat saved to database");
-    })
-    .catch((err) => {
-      console.log(err);
+  try {
+    let { from, to, message } = req.body;
+    let newChat = new Chat({
+      from: from,
+      to: to,
+      message: message,
+      createdAt: new Date(),
     });
 
-  res.redirect("/chats");}
-catch(err){
-  next(err);
-}
+    newChat
+      .save()
+      .then(() => {
+        console.log("Chat saved to database");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    res.redirect("/chats");
+  } catch (err) {
+    next(err);
+  }
 });
 
 //Edit route
 app.get("/chats/:id/edit", async (req, res) => {
-  let { id } = req.params;
-  let chat = await Chat.findById(id);
-  res.render("edit", { chat });
+  try {
+    let { id } = req.params;
+    let chat = await Chat.findById(id);
+    res.render("edit", { chat });
+  } catch (err) {
+    next(err);
+  }
 });
 
 //Update route
 app.put("/chats/:id", async (req, res) => {
-  let { id } = req.params;
-  let { message: newMessage } = req.body;
-  let updatedChat = await Chat.findByIdAndUpdate(
-    id,
-    { message: newMessage },
-    { runValidators: true }, //to run the validators defined in the schema
-    { new: true }, //to return the updated document instead of the old one
-  );
-  res.redirect("/chats");
-  console.log(updatedChat);
+  try {
+    let { id } = req.params;
+    let { message: newMessage } = req.body;
+    let updatedChat = await Chat.findByIdAndUpdate(
+      id,
+      { message: newMessage },
+      { runValidators: true }, //to run the validators defined in the schema
+      { new: true }, //to return the updated document instead of the old one
+    );
+    res.redirect("/chats");
+    console.log(updatedChat);
+  } catch (err) {
+    next(err);
+  }
 });
 
 //delete route
 
 app.delete("/chats/:id", async (req, res) => {
-  let { id } = req.params;
-  let deletedChats = await Chat.findByIdAndDelete(id);
-  console.log(deletedChats);
-  res.redirect("/chats");
+  try {
+    let { id } = req.params;
+    let deletedChats = await Chat.findByIdAndDelete(id);
+    console.log(deletedChats);
+    res.redirect("/chats");
+  } catch (err) {
+    next(err);
+  }
 });
-
 
 //error handling middleware
 app.use((err, req, res, next) => {
