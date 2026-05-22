@@ -44,28 +44,28 @@ app.get("/chats", async (req, res) => {
 });
 
 app.get("/chats/new", (req, res) => {
-  throw new ExpressError(400, "Bad Request");
-  res.render("new");
+  res.render("new.ejs");
 });
 
 // this route is for showing a single chat message based on its ID. It uses the findById method of the Chat model to retrieve the chat from the database. If the chat is not found, it returns a 404 status with a "Chat not found" message. If the ID provided is invalid, it catches the error and returns a 400 status with an "Invalid ID" message. If the chat is found successfully, it renders the "edit.ejs" template and passes the chat data to it for display.
+
 //NEW----show route
 app.get("/chats/:id", async (req, res, next) => {
   let { id } = req.params;
   try {
     let chat = await Chat.findById(id);
     if (!chat) {
-      return res.status(404).send("Chat not found");
+      return next(new ExpressError(404, "Chat not found"));
     }
     res.render("edit.ejs", { chat });
   } catch (err) {
-    res.status(400).send("Invalid ID");
+    next(new ExpressError(400, "Invalid ID"));
   }
 });
 
 //create route
 app.post("/chats", (req, res) => {
-  let { from, to, message } = req.body;
+  try{  let { from, to, message } = req.body;
   let newChat = new Chat({
     from: from,
     to: to,
@@ -82,7 +82,10 @@ app.post("/chats", (req, res) => {
       console.log(err);
     });
 
-  res.redirect("/chats");
+  res.redirect("/chats");}
+catch(err){
+  next(err);
+}
 });
 
 //Edit route
@@ -115,6 +118,8 @@ app.delete("/chats/:id", async (req, res) => {
   res.redirect("/chats");
 });
 
+
+//error handling middleware
 app.use((err, req, res, next) => {
   let { status = 400, message = "Something went wrong" } = err;
   res.status(status).send(message);
