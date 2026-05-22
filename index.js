@@ -37,15 +37,21 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/chats", async (req, res) => {
-  try {
+//asyncWrapper function to handle errors in async functions
+const asyncWrap = (fn) => {
+  return function (req, res, next) {
+    fn(req, res, next).catch(next);
+  };
+};
+
+app.get(
+  "/chats",
+  asyncWrap(async (req, res, next) => {
     let chats = await Chat.find();
     //console.log(chats);
     res.render("index", { chats });
-  } catch (err) {
-    next(err);
-  }
-});
+  }),
+);
 
 app.get("/chats/new", (req, res) => {
   res.render("new.ejs");
@@ -54,22 +60,22 @@ app.get("/chats/new", (req, res) => {
 // this route is for showing a single chat message based on its ID. It uses the findById method of the Chat model to retrieve the chat from the database. If the chat is not found, it returns a 404 status with a "Chat not found" message. If the ID provided is invalid, it catches the error and returns a 400 status with an "Invalid ID" message. If the chat is found successfully, it renders the "edit.ejs" template and passes the chat data to it for display.
 
 //NEW----show route
-app.get("/chats/:id", async (req, res, next) => {
-  let { id } = req.params;
-  try {
+app.get(
+  "/chats/:id",
+  asyncWrap(async (req, res) => {
+    let { id } = req.params;
     let chat = await Chat.findById(id);
     if (!chat) {
       return next(new ExpressError(404, "Chat not found"));
     }
     res.render("edit.ejs", { chat });
-  } catch (err) {
-    next(new ExpressError(400, "Invalid ID"));
-  }
-});
+  }),
+);
 
 //create route
-app.post("/chats", (req, res) => {
-  try {
+app.post(
+  "/chats",
+  asyncWrap(async (req, res) => {
     let { from, to, message } = req.body;
     let newChat = new Chat({
       from: from,
@@ -88,25 +94,23 @@ app.post("/chats", (req, res) => {
       });
 
     res.redirect("/chats");
-  } catch (err) {
-    next(err);
-  }
-});
+  }),
+);
 
 //Edit route
-app.get("/chats/:id/edit", async (req, res) => {
-  try {
+app.get(
+  "/chats/:id/edit",
+  asyncWrap(async (req, res) => {
     let { id } = req.params;
     let chat = await Chat.findById(id);
     res.render("edit", { chat });
-  } catch (err) {
-    next(err);
-  }
-});
+  }),
+);
 
 //Update route
-app.put("/chats/:id", async (req, res) => {
-  try {
+app.put(
+  "/chats/:id",
+  asyncWrap(async (req, res) => {
     let { id } = req.params;
     let { message: newMessage } = req.body;
     let updatedChat = await Chat.findByIdAndUpdate(
@@ -117,23 +121,19 @@ app.put("/chats/:id", async (req, res) => {
     );
     res.redirect("/chats");
     console.log(updatedChat);
-  } catch (err) {
-    next(err);
-  }
-});
+  }),
+);
 
 //delete route
-
-app.delete("/chats/:id", async (req, res) => {
-  try {
+app.delete(
+  "/chats/:id",
+  asyncWrap(async (req, res) => {
     let { id } = req.params;
     let deletedChats = await Chat.findByIdAndDelete(id);
     console.log(deletedChats);
     res.redirect("/chats");
-  } catch (err) {
-    next(err);
-  }
-});
+  }),
+);
 
 //error handling middleware
 app.use((err, req, res, next) => {
