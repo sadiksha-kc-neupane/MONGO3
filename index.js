@@ -14,24 +14,18 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
-main()
-  .then(() => `Connected to MongoDB`)
-  .catch((err) => console.log(err));
-
-async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/fakewhatsapp");
-}
-
-let Chat1 = new Chat({
-  from: "Alice",
-  to: "bob",
-  message: "Hello Bob",
-  createdAt: new Date(),
+main().catch((err) => {
+  console.log("MongoDB connection error:", err);
+  process.exit(1);
 });
 
-Chat1.save()
-  .then(() => console.log("Chat saved to database"))
-  .catch((err) => console.log(err));
+async function main() {
+  await mongoose.connect("mongodb://127.0.0.1:27017/whatsapp");
+  console.log("Connected to MongoDB");
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
+}
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -62,7 +56,7 @@ app.get("/chats/new", (req, res) => {
 //NEW----show route
 app.get(
   "/chats/:id",
-  asyncWrap(async (req, res) => {
+  asyncWrap(async (req, res, next) => {
     let { id } = req.params;
     let chat = await Chat.findById(id);
     if (!chat) {
@@ -116,8 +110,7 @@ app.put(
     let updatedChat = await Chat.findByIdAndUpdate(
       id,
       { message: newMessage },
-      { runValidators: true }, //to run the validators defined in the schema
-      { new: true }, //to return the updated document instead of the old one
+      { new: true, runValidators: true }, // return updated document and run schema validators
     );
     res.redirect("/chats");
     console.log(updatedChat);
@@ -134,6 +127,11 @@ app.delete(
     res.redirect("/chats");
   }),
 );
+
+app.use((err, req, res, next) => {
+  console.log(err.name);
+  next(err);
+});
 
 //error handling middleware
 app.use((err, req, res, next) => {
