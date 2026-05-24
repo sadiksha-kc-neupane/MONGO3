@@ -128,8 +128,19 @@ app.delete(
   }),
 );
 
+//error handling function for CastError, which occurs when an invalid ID is provided in the URL. It logs a message to the console indicating that a CastError occurred and provides details about the error. The function then returns the error object, which can be passed to the next middleware for further handling.
+let handleCastError = (err) => {
+  console.log("This was an cast error, please check the ID you provided");
+  console.dir(err.message + " is not a valid ID");
+  return err;
+};
+
+//error logging middleware
 app.use((err, req, res, next) => {
   console.log(err.name);
+  if (err.name === "CastError") {
+    err = handleCastError(err);
+  }
   next(err);
 });
 
